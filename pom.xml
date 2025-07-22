@@ -15,6 +15,25 @@
         <url>https://www.miniorange.com/</url>
     </organization>
 
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <amps.version>8.13.0</amps.version>
+        <bitbucket.version>8.19.6</bitbucket.version>
+        <bitbucket.data.version>${bitbucket.version}</bitbucket.data.version>
+
+        <!-- This property ensures consistency between the key in atlassian-plugin.xml and the OSGi bundle's key. -->
+        <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
+
+        <osgi.javaconfig.version>0.6.0</osgi.javaconfig.version>
+        <spring.version>6.2.7</spring.version>
+        <javax.inject.version>1</javax.inject.version>
+        <jsr311.version>1.1.1</jsr311.version>
+        <plugin.testrunner.version>2.0.2</plugin.testrunner.version>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -170,7 +189,7 @@
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>1.4</version>
+            <version>1.6.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -219,20 +238,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <amps.version>8.1.2</amps.version>
-        <bitbucket.version>5.16.0</bitbucket.version>
-        <bitbucket.data.version>${bitbucket.version}</bitbucket.data.version>
-        <!-- This property ensures consistency between the key in atlassian-plugin.xml and the OSGi bundle's key. -->
-        <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
-        <osgi.javaconfig.version>0.6.0</osgi.javaconfig.version>
-        <spring.version>4.2.5.RELEASE</spring.version>
-        <javax.inject.version>1</javax.inject.version>
-        <jsr311.version>1.1.1</jsr311.version>
-        <plugin.testrunner.version>2.0.2</plugin.testrunner.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
 </project>
