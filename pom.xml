@@ -1,181 +1,269 @@
-<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
-    <plugin-info>
-        <description>${project.description}</description>
-        <version>${project.version}</version>
-        <vendor name="${project.organization.name}" url="${project.organization.url}" />
-        <param name="plugin-icon">images/pluginIcon.png</param>
-        <param name="plugin-logo">images/pluginLogo.png</param>
-        <param name="configure.url">/plugins/servlet/crowd-sso/configuration-info</param>
-        <param name="atlassian-licensing-enabled">true</param>
-        <param name="atlassian-data-center-compatible">true</param>
-        <param name="atlassian-data-center-status">compatible</param>
-    </plugin-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-    <!-- add our i18n resource -->
-    <resource type="i18n" name="i18n" location="bitbucket-crowd-sso"/>
-    
-    <!-- add our web resources -->
-    <web-resource key="bitbucket-crowd-sso-resources" name="bitbucket-crowd-sso Web Resources">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <dependency>com.atlassian.auiplugin:aui-select2</dependency>
-        <dependency>com.atlassian.auiplugin:aui-toggle</dependency>
-        <dependency>com.atlassian.auiplugin:aui-select</dependency>
-        <dependency>com.atlassian.auiplugin:aui-experimental-iconfont</dependency>
-        <dependency>com.atlassian.auiplugin:aui-expander</dependency>
-        <dependency>com.atlassian.auiplugin:dialog2</dependency>
-        <dependency>com.atlassian.auiplugin:aui-experimental-expander</dependency>
+    <groupId>com.miniorange.bitbucket.crowd</groupId>
+    <artifactId>bitbucket-crowd-sso</artifactId>
+    <version>2.1.0</version>
+    <packaging>atlassian-plugin</packaging>
 
-        <resource type="download" name="images/" location="/images"/>
+    <name>miniOrange Bitbucket Crowd SSO</name>
+    <description>This is the crowd saml redirect plugin for Atlassian Bitbucket Server.</description>
 
-        <resource type="download" name="bitbucket-crowd-sso.css" location="/css/bitbucket-crowd-sso.css"/>
-        <resource type="download" name="bitbucket-crowd-sso.js" location="/js/bitbucket-crowd-sso.js"/>
-        <resource type="download" name="contactus.js" location="/js/contactus.js"/>
-        <resource type="download" name="licensewarning.js" location="/js/licensewarning.js"/>
+    <organization>
+        <name>miniOrange</name>
+        <url>https://www.miniorange.com/</url>
+    </organization>
 
-        <context>atl.general</context>
-        <context>atl.admin</context>
-    </web-resource>
+    <properties>
+        <amps.version>9.2.5</amps.version>
+        <bitbucket.version>10.0.0</bitbucket.version>
+        <bitbucket.data.version>${bitbucket.version}</bitbucket.data.version>
+        <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
+        <osgi.javaconfig.version>0.6.0</osgi.javaconfig.version>
+        <spring.version>6.2.7</spring.version>
+        <plugin.testrunner.version>2.0.2</plugin.testrunner.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+    </properties>
 
-    <web-resource key="bitbucket.redirect.rules" i18n-name-key="bitbucket.redirect.rules">
-        <resource name="bitbucket-redirect.js" type="download" location="/js/redirectrules.js" />`
-    </web-resource>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.atlassian.bitbucket.server</groupId>
+                <artifactId>bitbucket-parent</artifactId>
+                <version>${bitbucket.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.atlassian.bitbucket.server</groupId>
+            <artifactId>bitbucket-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
-    <velocity-allowlist key="settings-allowlist">
-        <method>com.miniorange.crowd.bitbucket.service.PluginConfigurationService#getLoginPageUrl()</method>
-    </velocity-allowlist>
+        <dependency>
+            <groupId>com.atlassian.plugins</groupId>
+            <artifactId>atlassian-plugins-osgi-javaconfig</artifactId>
+            <version>${osgi.javaconfig.version}</version>
+        </dependency>
+        <!-- OSGi Java Config dependencies -->
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.framework</artifactId>
+            <version>4.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.sal</groupId>
+            <artifactId>sal-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>jakarta.servlet</groupId>-->
+<!--            <artifactId>jakarta.servlet-api</artifactId>-->
+<!--            <version>4.0.1</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>jakarta.ws.rs</groupId>-->
+<!--            <artifactId>jsr311-api</artifactId>-->
+<!--            <version>1.1.1</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.18.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.templaterenderer</groupId>
+            <artifactId>atlassian-template-renderer-api</artifactId>
+            <version>5.0.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.upm</groupId>
+            <artifactId>licensing-api</artifactId>
+            <version>1001.3.27</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.upm</groupId>
+            <artifactId>upm-api</artifactId>
+            <version>1001.3.27</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.38</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.annotations</groupId>
+            <artifactId>atlassian-annotations</artifactId>
+            <version>5.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.crowd</groupId>
+            <artifactId>crowd-api</artifactId>
+            <version>6.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.17.2</version> <!-- Use a compatible version -->
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.17.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.17.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20240303</version> <!-- or latest -->
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.15</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.15.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.14</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.6.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.scheduler</groupId>
+            <artifactId>atlassian-scheduler-api</artifactId>
+            <version>4.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>3.1.0</version> <!-- Or latest -->
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+            <scope>provided</scope><!-- Or match your other Spring libs -->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-fileupload2-jakarta-servlet6</artifactId>
+            <version>2.0.0-M4</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.14.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>bitbucket-maven-plugin</artifactId>
+                <version>${amps.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <products>
+                        <product>
+                            <id>bitbucket</id>
+                            <instanceId>bitbucket</instanceId>
+                            <version>${bitbucket.version}</version>
+                            <dataVersion>${bitbucket.data.version}</dataVersion>
+                        </product>
+                    </products>
+                    <banningExcludes>
+                        <exclude>org.jsoup:jsoup</exclude>
+                    </banningExcludes>
+                    <instructions>
+                        <Atlassian-Plugin-Key>${atlassian.plugin.key}</Atlassian-Plugin-Key>
 
-    <web-item name="SAML SSO Configuration Menu" key="samlsso.config.menu"
-              section="atl.admin/admin-plugins-section" weight="150">
-        <description key="samlsso.config.menu.desc">This display menu item for configuring
-            the plugin in System settings under Security.
-        </description>
-        <label key="samlsso.config.menu.lable">miniOrange Bitbucket Crowd SSO</label>
-        <link linkId="samlsso.config.menu.link">/plugins/servlet/crowd-sso/configuration-info</link>
-    </web-item>
+                        <!-- Add package to export here -->
+                        <Export-Package>
+                            com.miniorange.bitbucket.crowd.api,
+                        </Export-Package>
 
-<!--    <listener name='User Authenticated Event Listener' class='com.miniorange.crowd.bitbucket.event.BitbucketLoginEventListener' key='AuthenticationSuccessEventListener'>-->
-<!--        <description>Listen user authenticated and trigger remote directory sync.</description>-->
-<!--    </listener>-->
+                        <!-- Add package import here -->
+                        <Import-Package>
+                            org.springframework.osgi.*;resolution:="optional",
+                            org.eclipse.gemini.blueprint.*;resolution:="optional",
+                            *
+                        </Import-Package>
 
-    <servlet-filter name="login Interceptor Filter" key="login-interceptor-filter"
-                    location="before-login" class="com.miniorange.crowd.bitbucket.filter.BitbucketLoginInterceptorFilter"
-                    weight="0">
-        <description>
-            Intercept Authentication from Login Page
-        </description>
-        <url-pattern>/login</url-pattern>
-        <url-pattern>/j_atl_security_check</url-pattern>
-        <url-pattern>/rest/tsv/1.0/authenticate</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
-        <dispatcher>INCLUDE</dispatcher>
-    </servlet-filter>
-
-    <servlet key="configuration-info" class="com.miniorange.crowd.bitbucket.configuration.CrowdConfigurationInfo">
-        <url-pattern>/crowd-sso/configuration-info</url-pattern>
-        <init-param>
-            <param-name>RequireSecurityToken</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </servlet>
-
-    <servlet key="connector-sso-config" class="com.miniorange.crowd.bitbucket.configuration.CrowdConnectorSSOConfig">
-        <url-pattern>/crowd-sso/connector-sso-config</url-pattern>
-        <init-param>
-            <param-name>RequireSecurityToken</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </servlet>
-
-    <servlet key="sso-redirection-config" class="com.miniorange.crowd.bitbucket.configuration.CrowdSSORedirectionConfig">
-        <url-pattern>/crowd-sso/sso-redirection-config</url-pattern>
-        <init-param>
-            <param-name>RequireSecurityToken</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </servlet>
-
-    <servlet key="redirection-rule-config" class="com.miniorange.crowd.bitbucket.configuration.CrowdSSORedirectionRuleConfig">
-        <url-pattern>/crowd-sso/redirection-rule-config</url-pattern>
-        <init-param>
-            <param-name>RequireSecurityToken</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </servlet>
-
-    <servlet key="look-feel-config" class="com.miniorange.crowd.bitbucket.configuration.CrowdLookAndFeelConfig">
-        <url-pattern>/crowd-sso/look-feel-config</url-pattern>
-        <init-param>
-            <param-name>RequireSecurityToken</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </servlet>
-
-    <servlet key="backup-restore-config" class="com.miniorange.crowd.bitbucket.configuration.CrowdBackupAndRestoreConfig">
-        <url-pattern>/crowd-sso/backup-restore-config</url-pattern>
-        <init-param>
-            <param-name>RequireSecurityToken</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </servlet>
-
-    <servlet key="contactus-config" class="com.miniorange.crowd.bitbucket.configuration.CrowdContactUsConfig">
-        <url-pattern>/crowd-sso/contactus-config</url-pattern>
-        <init-param>
-            <param-name>RequireSecurityToken</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </servlet>
-
-    <servlet name="Get Configuration Servlet" i18n-name-key="samlsso.config.servlet" key="samlsso.config.servlet"
-             class="com.miniorange.crowd.bitbucket.rest.MoGetConfiguration">
-        <description key="samlsso.config.servlet.desc">This module handles Crowd configuration.</description>
-        <url-pattern>/samlsso/getconfig</url-pattern>
-    </servlet>
-
-    <servlet name="Ajax Call Servlet Filter" i18n-name-key="samlsso.admin.ajaxcall.servlet"
-             key="samlsso.admin.ajaxcall.servlet" class="com.miniorange.crowd.bitbucket.rest.MoAjaxCallServlet">
-        <description>AJAX call service provider</description>
-        <url-pattern>/samlsso/moapi</url-pattern>
-    </servlet>
-
-    <servlet name="Download Configurations" i18n-name-key="samlsso.config.downloadconfigurations"
-             key="samlsso.config.downloadconfigurations" class="com.miniorange.crowd.bitbucket.rest.CrowdDownloadConfigurationsServlet">
-        <description>This module downloads the configuration </description>
-        <url-pattern>/samlsso/downloadconfigurations</url-pattern>
-    </servlet>
-
-    <servlet name="Logout Servlet Filter" i18n-name-key="samlsso.admin.logout.servlet"
-             key="samlsso.admin.logout.servlet" class="com.miniorange.crowd.bitbucket.servlet.MoLogoutServlet">
-        <description>Custom logout page for crowd connector</description>
-        <url-pattern>/samlsso/logout</url-pattern>
-    </servlet>
-
-    <servlet name="Enable Backdoor URl" i18n-name-key="samlsso.config.enablebackdoorurl"
-             key="samlsso.config.enablebackdoorurl" class="com.miniorange.crowd.bitbucket.rest.MoEnableBackdoorUrl">
-        <description>This module allows you to enable Backdoor URL.</description>
-        <url-pattern>/api/enablebackdoorurl</url-pattern>
-    </servlet>
-
-    <servlet name="Enable SSO via REST" i18n-name-key="samlsso.config.enablesso"
-             key="samlsso.config.enablesso" class="com.miniorange.crowd.bitbucket.rest.EnableSSOAPI">
-        <description>This module allows you to enable SSO via REST calls.</description>
-        <url-pattern>/api/enablessoapi</url-pattern>
-    </servlet>
-
-    <servlet name="Configure Plugin URl" i18n-name-key="samlsso.config.configureplugin" key="samlsso.config.configureplugin"
-             class="com.miniorange.crowd.bitbucket.rest.MoCrowdConfigServlet">
-        <description key="samlsso.config.configureplugin.desc">This module allows to configure plugin with REST API</description>
-        <url-pattern>/configureplugin</url-pattern>
-    </servlet>
-
-    <servlet name="Verify Domain Mapping API" i18n-name-key="samlsso.api.domainverify" key="samlsso.api.domainverify"
-             class="com.miniorange.crowd.bitbucket.rest.MoVerifyDomainAPI">
-        <description key="samlsso.api.domainverify.desc">This module verify the submitted domain and return the
-            corresponding IDPID
-        </description>
-        <url-pattern>/samlsso/verifydomain</url-pattern>
-    </servlet>
-</atlassian-plugin>
-
+                        <!-- Ensure plugin is Spring powered -->
+                        <Spring-Context>*</Spring-Context>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
